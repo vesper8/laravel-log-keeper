@@ -74,7 +74,7 @@ $app->configure('laravel-log-keeper');
 ```
 
 ### Log Format
-To use the Laravel Log Keeper your log files have to be in the daily format, which is defined in your config/app.php
+To use the Laravel Log Keeper your log files have to be in the daily format, which is defined in your `config/app.php`
 ```php
     ...
     'log' => 'daily',
