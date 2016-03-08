@@ -73,6 +73,14 @@ Load configuration file in `bootstrap/app.php`:
 $app->configure('laravel-log-keeper');
 ```
 
+### Log Format
+To use the Laravel Log Keeper your log files have to be in the daily format, which is defined in your config/app.php
+```php
+    ...
+    'log' => 'daily',
+    ...
+```
+
 ## Security
 
 If you discover any security related issues, please email mathiasgrimm@gmail.com instead of using the issue tracker.
