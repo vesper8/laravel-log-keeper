@@ -1,6 +1,6 @@
 {
     "name": "mathiasgrimm/laravel-log-keeper",
-    "description": "Laravel Log Keeper helps rotating you logs while storing it anywhere you want with custom local/remote retention policies",
+    "description": "Laravel Log Keeper helps rotating you logs while storing them anywhere you want with custom local/remote retention policies",
     "keywords": ["laravel", "log", "s3", "retention"],
     "authors": [
         {
