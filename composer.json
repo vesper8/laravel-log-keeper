@@ -1,0 +1,28 @@
+{
+    "name": "mathiasgrimm/laravel-log-keeper",
+    "description": "Laravel Log Keeper helps rotating you logs while storing it anywhere you want with custom local/remote retention policies",
+    "keywords": ["laravel", "log", "s3", "retention"],
+    "authors": [
+        {
+            "name": "Mathias Grimm",
+            "email": "mathiasgrimm@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "require-dev" : {
+
+    },
+
+    "autoload": {
+        "psr-4": {
+            "MathiasGrimm\\LaravelLogKeeper\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+        ]
+
+    }
+}
