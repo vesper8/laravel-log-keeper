@@ -13,10 +13,12 @@ class FakeRemoteLogsRepo implements RemoteLogsRepoInterface
     {
         $this->config = $config;
 
+        // @TODO should be local retention, + 1, -1
         $_6Days = Carbon::today()->subDays(6);
         $_7Days = Carbon::today()->subDays(7);
         $_8Days = Carbon::today()->subDays(8);
 
+        // @TODO should be remote retention, + 1, -1
         $_29Days = Carbon::today()->subDays(29);
         $_30Days = Carbon::today()->subDays(30);
         $_31Days = Carbon::today()->subDays(31);
