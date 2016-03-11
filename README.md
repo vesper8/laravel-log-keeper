@@ -63,7 +63,7 @@ To use the Laravel Log Keeper your log files have to be in the daily format, whi
 ```
 
 ### Environment
-<pre>
+```php
     // ----------------------------------------------------------------------------
     // Enable or Disable the Laravel Log Keeper
     // ----------------------------------------------------------------------------
@@ -99,13 +99,8 @@ To use the Laravel Log Keeper your log files have to be in the daily format, whi
     // Which config/filesystems.php disk will be used for remote disk
     // ----------------------------------------------------------------------------
     'remote_disk' => env('LARAVEL_LOG_KEEPER_REMOTE_DISK'),
-
-    // ----------------------------------------------------------------------------
-    // For the compression we use bzip which is not always present
-    // ----------------------------------------------------------------------------
-    'compressRemote' => env('LARAVEL_LOG_KEEPER_COMPRESS_REMOTE', true),
 ];
-</pre>
+```
 
 ## Security
 
