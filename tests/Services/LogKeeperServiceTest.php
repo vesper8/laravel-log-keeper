@@ -11,6 +11,38 @@ class LogKeeperServiceTest extends TestCase
     /**
      * @test
      */
+    public function files_are_being_created_on_remote()
+    {
+        $today      = Carbon::today();
+        $config     = config('laravel-log-keeper');
+        $localRepo  = new FakeLocalLogsRepo($config);
+        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $remoteRepo->setLogs([]);
+
+        $logs = $localRepo->getLogs();
+
+        $logsToMove = array_filter($logs, function ($log) use ($today, $config) {
+            $date = LogUtil::getDate($log);
+            $diff = $date->diffInDays($today);
+
+            return (($diff > $config['localRetentionDays']) && ($diff <= $config['remoteRetentionDays']));
+        });
+
+        $logsToMove = array_values(array_map(function ($item) {
+            return $item . '.tar.bz2';
+        }, $logsToMove));
+
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service->work();
+
+        $logs = $remoteRepo->getLogs();
+
+        $this->assertSame($logsToMove, $logs);
+    }
+
+    /**
+     * @test
+     */
     public function it_has_no_local_files_older_than_the_local_retention()
     {
         $today      = Carbon::today();
