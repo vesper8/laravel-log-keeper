@@ -78,6 +78,21 @@ To use Laravel Log Keeper your log files have to be in the daily format, which i
 ```
 
 ### Environment
+You can override the following variables placing them in your .env
+
+Example:
+
+```
+# .env
+...
+
+LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS  = 3
+LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS = 15
+
+...
+
+```
+
 ```php
     // ----------------------------------------------------------------------------
     // Enable or Disable the Laravel Log Keeper.
