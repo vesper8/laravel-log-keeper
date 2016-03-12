@@ -3,6 +3,9 @@
 use MathiasGrimm\LaravelLogKeeper\Repos\LocalLogsRepo;
 use MathiasGrimm\LaravelLogKeeper\Repos\RemoteLogsRepo;
 use MathiasGrimm\LaravelLogKeeper\Services\LogKeeperService;
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 
 class LogKeeperServiceFactory
 {
@@ -12,9 +15,17 @@ class LogKeeperServiceFactory
      */
     public static function buildFromConfig(array $config)
     {
+        $logger = new Logger('laravel-log-keeper');
+
+        if ($config['log']) {
+            $logger->pushHandler(new RotatingFileHandler(storage_path('logs') . '/laravel-log-keeper.log', 365, Logger::INFO));
+        } else {
+            $logger->pushHandler(new NullHandler());
+        }
+
         $localRepo  = new LocalLogsRepo($config);
         $remoteRepo = new RemoteLogsRepo($config);
-        $service    = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service    = new LogKeeperService($config, $localRepo, $remoteRepo, $logger);
 
         return $service;
     }

@@ -1,5 +1,6 @@
 <?php namespace MathiasGrimm\LaravelLogKeeper\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use MathiasGrimm\LaravelLogKeeper\Factories\LogKeeperServiceFactory;
 
@@ -28,7 +29,12 @@ class LogKeeper extends Command
      */
     public function handle()
     {
-        $service = LogKeeperServiceFactory::buildFromLaravelConfig();
-        $service->work();
+        try {
+            $service = LogKeeperServiceFactory::buildFromLaravelConfig();
+            $logger  = $service->getLogger();
+            $service->work();
+        } catch (Exception $e) {
+            $logger->error("Something went wrong: {$e->getMessage()}");
+        }
     }
 }

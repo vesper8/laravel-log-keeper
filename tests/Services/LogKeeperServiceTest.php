@@ -4,9 +4,19 @@ use MathiasGrimm\LaravelLogKeeper\Repos\FakeLogsRepo;
 use MathiasGrimm\LaravelLogKeeper\Services\LogKeeperService;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 use Carbon\Carbon;
+use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 
 class LogKeeperServiceTest extends TestCase
 {
+    private function getLogger()
+    {
+        $logger = new Logger('laravel-log-keeper');
+        $logger->pushHandler(new NullHandler());
+
+        return $logger;
+    }
+
     /**
      * @test
      */
@@ -31,7 +41,7 @@ class LogKeeperServiceTest extends TestCase
             return $item . '.tar.bz2';
         }, $logsToMove));
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $remoteRepo->getCompressed();
@@ -50,7 +60,7 @@ class LogKeeperServiceTest extends TestCase
         $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $localRepo->getLogs();
@@ -70,7 +80,7 @@ class LogKeeperServiceTest extends TestCase
         $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $localRepo->getLogs();
@@ -91,7 +101,7 @@ class LogKeeperServiceTest extends TestCase
         $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $remoteRepo->getLogs();
@@ -114,7 +124,7 @@ class LogKeeperServiceTest extends TestCase
         $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $remoteRepo->getLogs();
@@ -147,7 +157,7 @@ class LogKeeperServiceTest extends TestCase
             $new,
         ]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $logs = $remoteRepo->getCompressed();
@@ -175,7 +185,7 @@ class LogKeeperServiceTest extends TestCase
 
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $this->assertSame(['laravel-old-2010-01-01.log'], $localRepo->getLogs());
@@ -207,7 +217,7 @@ class LogKeeperServiceTest extends TestCase
 
         $remoteRepo->setLogs([]);
 
-        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo, $this->getLogger());
         $service->work();
 
         $today = Carbon::today();
