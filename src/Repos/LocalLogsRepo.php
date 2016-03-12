@@ -4,7 +4,7 @@ use Exception;
 use Illuminate\Filesystem\Filesystem;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 
-class LocalLogsRepo implements LocalLogsRepoInterface
+class LocalLogsRepo implements LogsRepoInterface
 {
     private $config;
     private $localLogPath;
@@ -37,7 +37,7 @@ class LocalLogsRepo implements LocalLogsRepoInterface
         return $logs;
     }
 
-    public function deleteLog($log)
+    public function delete($log)
     {
         $path = "$this->localLogPath/$log";
 
@@ -53,12 +53,17 @@ class LocalLogsRepo implements LocalLogsRepoInterface
             throw new Exception("Something went wrong when compressing {$log}");
         }
 
-        $this->disk->delete($path = "$this->localLogPath/$log");
+        $this->disk->delete("{$this->localLogPath}/{$log}");
     }
 
     public function get($log)
     {
-        $path = "$this->localLogPath/$log";
+        $path = "{$this->localLogPath}/{$log}";
         return $this->disk->get($path);
+    }
+
+    public function put($log, $content)
+    {
+        $this->disk->put($log, $content);
     }
 }

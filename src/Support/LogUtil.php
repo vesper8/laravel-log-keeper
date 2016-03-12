@@ -76,4 +76,20 @@ class LogUtil
 
         throw new InvalidArgumentException('The provided log is not in the daily format');
     }
+
+    /**
+     * Get the diff in days for a given file and carbon date
+     *
+     * @param $log
+     * @param Carbon $date
+     * @return int
+     */
+    public static function diffInDays($log, Carbon $date)
+    {
+        $logDate = static::getDate($log);
+        $days    = $logDate->diffInDays($date);
+
+        return $days;
+    }
+
 }

@@ -18,4 +18,10 @@ class LogKeeperServiceFactory
 
         return $service;
     }
+
+    public static function buildFromLaravelConfig()
+    {
+        $config = config('laravel-log-keeper');
+        return static::buildFromConfig($config);
+    }
 }

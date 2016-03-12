@@ -1,6 +1,7 @@
 <?php
 
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
+use Carbon\Carbon;
 
 class LogUtilTest extends TestCase
 {
@@ -8,7 +9,7 @@ class LogUtilTest extends TestCase
     /**
      * @test
      */
-    public function it_get_only_logs()
+    public function it_gets_only_logs()
     {
         $logs = [
             'storage/logs/laravel.log.',
@@ -38,7 +39,7 @@ class LogUtilTest extends TestCase
     /**
      * @test
      */
-    public function it_get_only_compressed_logs()
+    public function it_gets_only_compressed_logs()
     {
         $logs = [
             'storage/logs/laravel.log.',
@@ -125,5 +126,18 @@ class LogUtilTest extends TestCase
                 $this->assertFalse((bool) $e, "Expected: {$result} Obtained: {$date}");
             }
         }
+    }
+
+    /**
+     * @test
+     */
+    public function it_gets_the_diff()
+    {
+        $today    = Carbon::today();
+        $logDate = Carbon::today()->subDays(10);
+
+        $log = "laravel-{$logDate->toDateString()}.log";
+
+        $this->assertSame(10, LogUtil::diffInDays($log, $today));
     }
 }

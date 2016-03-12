@@ -28,14 +28,14 @@ class LogKeeper extends Command
      */
     public function handle()
     {
-        $this->config = config('laravel-log-keeper');
+//        $this->config = config('laravel-log-keeper');
+//
+//        if (!$this->config['enabled']) {
+//            $this->comment("Laravel Log Keeper is disabled");
+//            return;
+//        }
 
-        if (!$this->config['enabled']) {
-            $this->comment("Laravel Log Keeper is disabled");
-            return;
-        }
-
-        $service = LogKeeperServiceFactory::buildFromConfig($this->config);
+        $service = LogKeeperServiceFactory::buildFromLaravelConfig();
         $service->work();
     }
 }

@@ -3,7 +3,7 @@
 use \Storage;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 
-class RemoteLogsRepo implements RemoteLogsRepoInterface
+class RemoteLogsRepo implements LogsRepoInterface
 {
     private $config;
     private $localLogPath;
@@ -21,13 +21,13 @@ class RemoteLogsRepo implements RemoteLogsRepoInterface
     public function getLogs()
     {
         $allLogs    = $this->disk->files($this->remotePath);
-        $logs       = LogUtil::getCompressed($allLogs);
+        $logs       = LogUtil::getLogs($allLogs);
         $logs       = LogUtil::mapBasename($logs);
 
         return $logs;
     }
 
-    public function deleteLog($log)
+    public function delete($log)
     {
         $path = "{$this->remotePath}{$log}";
 
@@ -39,5 +39,25 @@ class RemoteLogsRepo implements RemoteLogsRepoInterface
         $path = "{$this->remotePath}{$log}";
 
         $this->disk->put($path, $content);
+    }
+
+    public function getCompressed()
+    {
+        $allLogs    = $this->disk->files($this->remotePath);
+        $logs       = LogUtil::getCompressed($allLogs);
+        $logs       = LogUtil::mapBasename($logs);
+
+        return $logs;
+    }
+
+    public function compress($log, $compressedName)
+    {
+        throw new \Exception("Method not implemented yet");
+        // TODO: Implement compress() method.
+    }
+
+    public function get($log)
+    {
+        return $this->disk->get("{$this->remotePath}/{$log}");
     }
 }

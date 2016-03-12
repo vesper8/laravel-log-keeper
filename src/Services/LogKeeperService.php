@@ -1,7 +1,8 @@
 <?php namespace MathiasGrimm\LaravelLogKeeper\Services;
 
+use Exception;
 use MathiasGrimm\LaravelLogKeeper\Repos\LocalLogsRepoInterface;
-use MathiasGrimm\LaravelLogKeeper\Repos\RemoteLogsRepoInterface;
+use MathiasGrimm\LaravelLogKeeper\Repos\LogsRepoInterface;
 use Carbon\Carbon;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 
@@ -12,26 +13,35 @@ class LogKeeperService
     private $remoteRepo;
     private $localRetentionDays;
     private $remoteRetentionDays;
+    private $remoteRetentionDaysCalculated;
 
     /**
      * @var Carbon
      */
     private $today;
 
-    public function __construct($config, LocalLogsRepoInterface $localRepo, RemoteLogsRepoInterface $remoteRepo)
+    public function __construct($config, LogsRepoInterface $localRepo, LogsRepoInterface $remoteRepo)
     {
-        $this->config              = $config;
-        $this->localRepo           = $localRepo;
-        $this->remoteRepo          = $remoteRepo;
-        $this->today               = Carbon::today();
-        $this->localRetentionDays  = $this->config['localRetentionDays'];
-        $this->remoteRetentionDays = $this->config['remoteRetentionDays'];
+        $this->config                        = $config;
+        $this->localRepo                     = $localRepo;
+        $this->remoteRepo                    = $remoteRepo;
+        $this->today                         = Carbon::today();
+        $this->localRetentionDays            = $this->config['localRetentionDays'];
+        $this->remoteRetentionDays           = $this->config['remoteRetentionDays'];
+        $this->remoteRetentionDaysCalculated = $this->config['remoteRetentionDaysCalculated'];
     }
 
     public function work()
     {
+        if (!$this->config['enabled']) {
+            throw new Exception("Laravel Log Keeper is disabled");
+        }
+
         $this->localWork();
-        $this->remoteCleanUp();
+
+        if ($this->config['enabled_remote']) {
+            $this->remoteCleanUp();
+        }
     }
 
     private function localWork()
@@ -39,18 +49,21 @@ class LogKeeperService
         $logs = $this->localRepo->getLogs();
 
         foreach ($logs as $log) {
-            $logDate = LogUtil::getDate($log);
-            $days    = $logDate->diffInDays($this->today);
+            $days = LogUtil::diffInDays($log, $this->today);
 
-            if (($days > $this->localRetentionDays) && ($days <= $this->remoteRetentionDays)) {
+            if (($days > $this->localRetentionDays) && ($days <= $this->remoteRetentionDaysCalculated)) {
                 $compressedName = "{$log}.tar.bz2";
                 $this->localRepo->compress($log, $compressedName);
                 $content = $this->localRepo->get($compressedName);
-                $this->remoteRepo->put($compressedName, $content);
-                $this->localRepo->deleteLog($compressedName);
-            } elseif (($days > $this->localRetentionDays) && ($days > $this->remoteRetentionDays)) {
+
+                if ($this->config['enabled_remote']) {
+                    $this->remoteRepo->put($compressedName, $content);
+                }
+
+                $this->localRepo->delete($compressedName);
+            } elseif (($days > $this->localRetentionDays) && ($days > $this->remoteRetentionDaysCalculated)) {
                 // file too old to be stored either remotely or locally
-                $this->localRepo->deleteLog($log);
+                $this->localRepo->delete($log);
             }
         }
     }
@@ -60,11 +73,10 @@ class LogKeeperService
         $logs = $this->remoteRepo->getLogs();
 
         foreach ($logs as $log) {
-            $logDate = LogUtil::getDate($log);
-            $days    = $logDate->diffInDays($this->today);
+            $days = LogUtil::diffInDays($log, $this->today);
 
-            if ($days > $this->remoteRetentionDays) {
-                $this->remoteRepo->deleteLog($log);
+            if ($days > $this->remoteRetentionDaysCalculated) {
+                $this->remoteRepo->delete($log);
             }
         }
     }

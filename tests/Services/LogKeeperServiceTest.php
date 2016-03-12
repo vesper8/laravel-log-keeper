@@ -1,7 +1,6 @@
 <?php
 
-use MathiasGrimm\LaravelLogKeeper\Repos\Fakes\FakeLocalLogsRepo;
-use MathiasGrimm\LaravelLogKeeper\Repos\Fakes\FakeRemoteLogsRepo;
+use MathiasGrimm\LaravelLogKeeper\Repos\FakeLogsRepo;
 use MathiasGrimm\LaravelLogKeeper\Services\LogKeeperService;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 use Carbon\Carbon;
@@ -15,8 +14,8 @@ class LogKeeperServiceTest extends TestCase
     {
         $today      = Carbon::today();
         $config     = config('laravel-log-keeper');
-        $localRepo  = new FakeLocalLogsRepo($config);
-        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
         $logs = $localRepo->getLogs();
@@ -25,7 +24,7 @@ class LogKeeperServiceTest extends TestCase
             $date = LogUtil::getDate($log);
             $diff = $date->diffInDays($today);
 
-            return (($diff > $config['localRetentionDays']) && ($diff <= $config['remoteRetentionDays']));
+            return (($diff > $config['localRetentionDays']) && ($diff <= $config['remoteRetentionDaysCalculated']));
         });
 
         $logsToMove = array_values(array_map(function ($item) {
@@ -35,7 +34,7 @@ class LogKeeperServiceTest extends TestCase
         $service = new LogKeeperService($config, $localRepo, $remoteRepo);
         $service->work();
 
-        $logs = $remoteRepo->getLogs();
+        $logs = $remoteRepo->getCompressed();
 
         $this->assertSame($logsToMove, $logs);
     }
@@ -47,8 +46,8 @@ class LogKeeperServiceTest extends TestCase
     {
         $today      = Carbon::today();
         $config     = config('laravel-log-keeper');
-        $localRepo  = new FakeLocalLogsRepo($config);
-        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
         $service = new LogKeeperService($config, $localRepo, $remoteRepo);
@@ -67,8 +66,8 @@ class LogKeeperServiceTest extends TestCase
     public function it_has_no_local_compressed_files()
     {
         $config     = config('laravel-log-keeper');
-        $localRepo  = new FakeLocalLogsRepo($config);
-        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
         $service = new LogKeeperService($config, $localRepo, $remoteRepo);
@@ -88,8 +87,8 @@ class LogKeeperServiceTest extends TestCase
     {
         $today      = Carbon::today();
         $config     = config('laravel-log-keeper');
-        $localRepo  = new FakeLocalLogsRepo($config);
-        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
         $service = new LogKeeperService($config, $localRepo, $remoteRepo);
@@ -111,8 +110,8 @@ class LogKeeperServiceTest extends TestCase
     {
         $today      = Carbon::today();
         $config     = config('laravel-log-keeper');
-        $localRepo  = new FakeLocalLogsRepo($config);
-        $remoteRepo = new FakeRemoteLogsRepo($config);
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
         $remoteRepo->setLogs([]);
 
         $service = new LogKeeperService($config, $localRepo, $remoteRepo);
@@ -123,7 +122,7 @@ class LogKeeperServiceTest extends TestCase
         foreach ($logs as $log) {
             $date = LogUtil::getDate($log);
             $diff = $today->diffInDays($date);
-            $this->assertTrue($diff <= $config['remoteRetentionDays'], "Diff: {$diff} days Log: $log");
+            $this->assertTrue($diff <= $config['remoteRetentionDaysCalculated'], "Diff: {$diff} days Log: $log");
         }
     }
 }

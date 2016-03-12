@@ -1,13 +1,14 @@
 <?php
 
-use MathiasGrimm\LaravelLogKeeper\Repos\Fakes\FakeLocalLogsRepo;
 
-class FakeLocalLogsRepoTest extends TestCase
+use MathiasGrimm\LaravelLogKeeper\Repos\FakeLogsRepo;
+
+class FakeLogsRepoTest extends TestCase
 {
     private function getRepo()
     {
         $config = config('laravel-log-keeper');
-        $repo   = new FakeLocalLogsRepo($config);
+        $repo   = new FakeLogsRepo($config);
 
         return $repo;
     }
@@ -15,11 +16,16 @@ class FakeLocalLogsRepoTest extends TestCase
     /**
      * @test
      */
-    public function it_get_logs()
+    public function it_gets_logs()
     {
         $repo = $this->getRepo();
+        $logs = $repo->getLogs();
 
-        $this->assertNotNull($repo->getLogs());
+        $this->assertTrue(count($logs) > 0);
+
+        foreach ($logs as $log) {
+            $this->assertTrue((bool) preg_match('/.*?-\d{4}-\d{2}-\d{2}\.log/', $log));
+        }
     }
 
     /**
@@ -51,7 +57,7 @@ class FakeLocalLogsRepoTest extends TestCase
         $logs = $repo->getLogs();
 
         $log = $logs[0];
-        $repo->deleteLog($log);
+        $repo->delete($log);
 
         $logs = $repo->getLogs();
         $this->assertFalse(in_array($log, $logs));

@@ -12,11 +12,6 @@ return [
     'enabled_remote' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', true),
 
     // ----------------------------------------------------------------------------
-    // Enable or Disable the Laravel Log Keeper for local operations
-    // ----------------------------------------------------------------------------
-    'enabled_local' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', true),
-
-    // ----------------------------------------------------------------------------
     // Where in the remote location it will be stored. You can leave it blank
     // ----------------------------------------------------------------------------
     'remote_path' => rtrim(env('LARAVEL_LOG_KEEPER_REMOTE_PATH'), '/'),
@@ -32,13 +27,12 @@ return [
     // ----------------------------------------------------------------------------
     'remoteRetentionDays' => env('LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS' , 30),
 
+    'remoteRetentionDaysCalculated' =>
+        env('LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS'   , 30) +
+        env('LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS'  , 7),
+
     // ----------------------------------------------------------------------------
     // Which config/filesystems.php disk will be used for remote disk
     // ----------------------------------------------------------------------------
     'remote_disk' => env('LARAVEL_LOG_KEEPER_REMOTE_DISK'),
-
-    // ----------------------------------------------------------------------------
-    // For the compression we use bzip which is not always present
-    // ----------------------------------------------------------------------------
-    'compressRemote' => env('LARAVEL_LOG_KEEPER_COMPRESS_REMOTE', true),
 ];
