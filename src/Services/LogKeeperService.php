@@ -79,7 +79,7 @@ class LogKeeperService
 
         foreach ($logs as $log) {
 
-            $this->logger->info("Analising {$log}");
+            $this->logger->info("Analysing {$log}");
 
             $days = LogUtil::diffInDays($log, $this->today);
 
@@ -88,19 +88,21 @@ class LogKeeperService
             if (($days > $this->localRetentionDays) && ($days <= $this->remoteRetentionDaysCalculated)) {
                 $compressedName = "{$log}.tar.bz2";
 
-                $this->logger->info("Compressing {$log} into {$compressedName}");
-
-                $this->localRepo->compress($log, $compressedName);
-                $content = $this->localRepo->get($compressedName);
-
                 if ($this->config['enabled_remote']) {
+                    $this->logger->info("Compressing {$log} into {$compressedName}");
+
+                    $this->localRepo->compress($log, $compressedName);
+                    $content = $this->localRepo->get($compressedName);
                     $this->remoteRepo->put($compressedName, $content);
+
+                    $this->logger->info("Deleting $compressedName locally");
+                    $this->localRepo->delete($compressedName);
                 } else {
+                    $this->logger->info("Deleting $log locally");
+                    $this->localRepo->delete($log);
+
                     $this->logger->info("Not uploading {$compressedName} because enabled_remote is false");
                 }
-
-                $this->logger->info("Deleting $compressedName locally");
-                $this->localRepo->delete($compressedName);
             } elseif (($days > $this->localRetentionDays) && ($days > $this->remoteRetentionDaysCalculated)) {
                 $this->logger->info("Deleting {$log} because it is to old to be kept either local our remotely");
 
