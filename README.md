@@ -49,22 +49,22 @@ Laravel Log Keeper is available via Composer:
 
 #### Register the cron job
 ```php
-    // app/Console/Kernel.php
+// app/Console/Kernel.php
 
-    protected $commands = [
-        ...
-        \MathiasGrimm\LaravelLogKeeper\Commands\LogKeeper::class
-        ...
-    ];
-
+protected $commands = [
     ...
-    
-    protected function schedule(Schedule $schedule)
-    {
-        ...
-        $schedule->command('laravel-log-keeper')->daily();
-        ...
-    }
+    \MathiasGrimm\LaravelLogKeeper\Commands\LogKeeper::class
+    ...
+];
+
+...
+
+protected function schedule(Schedule $schedule)
+{
+    ...
+    $schedule->command('laravel-log-keeper')->daily();
+    ...
+}
 
 ```
 
