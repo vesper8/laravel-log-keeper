@@ -8,6 +8,7 @@ Laravel Log Keeper
 Laravel Log Keeper helps rotating your logs while storing them anywhere you want with custom local/remote retention policies.
 
 A typical usage of Laravel Log Keeper would be to set a cron job to run daily and store local logs in a S3 bucket, (s)ftp, Dropbox or any other FileSystem driver
+
 You can define a local and/or a remote retention, which by default have 7 and 30 days subsequently.
 
 - Local files older than 7 days will be compressed using bzip2 and uploaded to the remote disk
