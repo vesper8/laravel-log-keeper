@@ -12,7 +12,7 @@ A typical usage of Laravel Log Keeper would be to set a cron job to run daily an
 You can define a local and/or a remote retention, which by default have 7 and 30 days subsequently.
 
 - Local files older than 7 days will be compressed using bzip2 and uploaded to the remote disk
-- Remote files older than 30 days will be permanently delete from the remote disk
+- Remote files older than 30 days will be permanently deleted from the remote disk
 
 ### Highlights
 
@@ -70,7 +70,7 @@ protected function schedule(Schedule $schedule)
 ```
 
 ### Log Format
-To use the Laravel Log Keeper your log files have to be in the daily format, which is defined in your `config/app.php`
+To use Laravel Log Keeper your log files have to be in the daily format, which is defined in your `config/app.php`
 ```php
     ...
     'log' => 'daily',
