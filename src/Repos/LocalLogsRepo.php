@@ -39,7 +39,7 @@ class LocalLogsRepo implements LogsRepoInterface
 
     public function delete($log)
     {
-        $path = "$this->localLogPath/$log";
+        $path = "{$this->localLogPath}/{$log}";
 
         $this->disk->delete($path);
     }

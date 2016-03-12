@@ -17,7 +17,7 @@ class LogKeeper extends Command
      *
      * @var string
      */
-    protected $description = '????????????????????';
+    protected $description = 'Upload local logs, delete old logs both locally and remote';
 
     private $config;
 
@@ -28,13 +28,6 @@ class LogKeeper extends Command
      */
     public function handle()
     {
-//        $this->config = config('laravel-log-keeper');
-//
-//        if (!$this->config['enabled']) {
-//            $this->comment("Laravel Log Keeper is disabled");
-//            return;
-//        }
-
         $service = LogKeeperServiceFactory::buildFromLaravelConfig();
         $service->work();
     }

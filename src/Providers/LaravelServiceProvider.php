@@ -7,10 +7,6 @@ class LaravelServiceProvider extends Provider
 {
     public function boot()
     {
-//        $this->publishes([
-//            __DIR__ . '/../config/laravel-log-keeper.php' => config_path('laravel-log-keeper.php'),
-//        ], 'config');
-
         $config = config('laravel-log-keeper');
 
         if ($config['enabled']) {
