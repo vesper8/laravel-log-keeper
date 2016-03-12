@@ -5,7 +5,7 @@ Laravel Log Keeper
 [![Latest Version](https://img.shields.io/github/release/mathiasgrimm/laravel-log-keeper.svg?style=flat-square)](https://github.com/mathiasgrimm/laravel-log-keeper/releases)
 [![Total Downloads](https://img.shields.io/packagist/dt/mathiasgrimm/laravel-log-keeper.svg?style=flat-square)](https://packagist.org/packages/mathiasgrimm/laravel-log-keeper)
 
-Laravel Log Keeper helps rotating you logs while storing them anywhere you want with custom local/remote retention policies.
+Laravel Log Keeper helps rotating your logs while storing them anywhere you want with custom local/remote retention policies.
 
 A typical usage of Laravel Log Keeper would be to set a cront job to run daily and store local logs in a S3 bucket, (s)ftp, Dropbox or any other FileSystem driver
 You can define a local and/or a remote retention, which by default have 7 and 30 days subsequently.
