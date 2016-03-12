@@ -154,4 +154,67 @@ class LogKeeperServiceTest extends TestCase
 
         $this->assertSame(LogUtil::mapBasename([$new]), $logs);
     }
+
+    /**
+     * @test
+     */
+    public function it_does_nothing_if_enabled_is_false()
+    {
+        $config     = config('laravel-log-keeper');
+
+        $config['enabled'] = false;
+
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
+
+        $localLogs = [
+            '/fake/storage/logs/laravel-old-2010-01-01.log',
+        ];
+
+        $localRepo->setLogs($localLogs);
+
+        $remoteRepo->setLogs([]);
+
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service->work();
+
+        $this->assertSame(['laravel-old-2010-01-01.log'], $localRepo->getLogs());
+        $this->assertSame([], $remoteRepo->getCompressed());
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_nothing_remotely_if_enabled_remote_is_false()
+    {
+        $today  = Carbon::today();
+        $config = config('laravel-log-keeper');
+
+        $config['enabled_remote'] = false;
+
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
+
+        $days = $config['localRetentionDays'] + 1;
+
+        $localLogs = [
+            '/fake/storage/logs/laravel-2010-01-01.log', // will be deleted
+            "/fake/storage/logs/laravel-today-{$today->toDateString()}.log", // nothing
+            "/fake/storage/logs/laravel-{$today->addDays($days)->toDateString()}.log", // upload if remote was enabled
+        ];
+
+        $localRepo->setLogs($localLogs);
+
+        $remoteRepo->setLogs([]);
+
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service->work();
+
+        $today = Carbon::today();
+        $logs  = $localRepo->getLogs();
+
+        $this->assertSame(["laravel-today-{$today->toDateString()}.log"], $logs);
+        $this->assertSame([], $remoteRepo->getCompressed());
+    }
+
 }

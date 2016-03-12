@@ -34,7 +34,7 @@ class LogKeeperService
     public function work()
     {
         if (!$this->config['enabled']) {
-            throw new Exception("Laravel Log Keeper is disabled");
+            return;
         }
 
         $this->localWork();
@@ -80,6 +80,4 @@ class LogKeeperService
             }
         }
     }
-
-
 }
