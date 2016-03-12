@@ -75,11 +75,6 @@ To use the Laravel Log Keeper your log files have to be in the daily format, whi
     'enabled_remote' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', true),
 
     // ----------------------------------------------------------------------------
-    // Enable or Disable the Laravel Log Keeper for local operations
-    // ----------------------------------------------------------------------------
-    'enabled_local' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', true),
-
-    // ----------------------------------------------------------------------------
     // Where in the remote location it will be stored. You can leave it blank
     // ----------------------------------------------------------------------------
     'remote_path' => rtrim(env('LARAVEL_LOG_KEEPER_REMOTE_PATH'), '/'),
