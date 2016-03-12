@@ -70,7 +70,7 @@ class LogKeeperService
 
     private function remoteCleanUp()
     {
-        $logs = $this->remoteRepo->getLogs();
+        $logs = $this->remoteRepo->getCompressed();
 
         foreach ($logs as $log) {
             $days = LogUtil::diffInDays($log, $this->today);

@@ -125,4 +125,33 @@ class LogKeeperServiceTest extends TestCase
             $this->assertTrue($diff <= $config['remoteRetentionDaysCalculated'], "Diff: {$diff} days Log: $log");
         }
     }
+
+    /**
+     * @tests
+     */
+    public function it_deletes_old_remote_files()
+    {
+        $today      = Carbon::today();
+        $config     = config('laravel-log-keeper');
+        $localRepo  = new FakeLogsRepo($config);
+        $remoteRepo = new FakeLogsRepo($config);
+
+        $localRepo->setLogs([]);
+
+        $days = $config['remoteRetentionDaysCalculated'];
+        $new  = "/fake/storage/logs/laravel-new-{$today->addDays($days)->toDateString()}.log.tar.bz2";
+
+        $remoteRepo->setLogs([
+            '/fake/storage/logs/laravel-old-2010-01-01.log',
+            '/fake/storage/logs/laravel-old-2010-01-02.log',
+            $new,
+        ]);
+
+        $service = new LogKeeperService($config, $localRepo, $remoteRepo);
+        $service->work();
+
+        $logs = $remoteRepo->getCompressed();
+
+        $this->assertSame(LogUtil::mapBasename([$new]), $logs);
+    }
 }
