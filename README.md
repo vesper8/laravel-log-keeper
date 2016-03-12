@@ -94,6 +94,8 @@ LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS = 15
 ```
 
 ```php
+    // laravel-log-keeper.php
+
     // ----------------------------------------------------------------------------
     // Enable or Disable the Laravel Log Keeper.
     // If it is set to false, no operations will be performed and it will be logged
