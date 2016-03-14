@@ -7,13 +7,7 @@ class LaravelServiceProvider extends Provider
 {
     public function boot()
     {
-        $config = config('laravel-log-keeper');
-
-        if ($config['enabled']) {
-            if ($config['enabled_remote'] && !$config['remote_disk']) {
-                throw new Exception("disk not configured for Laravel Log Keeper");
-            }
-        }
+        // 
     }
 
     /**
