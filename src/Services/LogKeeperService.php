@@ -93,6 +93,8 @@ class LogKeeperService
 
                     $this->localRepo->compress($log, $compressedName);
                     $content = $this->localRepo->get($compressedName);
+
+                    $this->logger->info("Uploading {$compressedName}");
                     $this->remoteRepo->put($compressedName, $content);
 
                     $this->logger->info("Deleting $compressedName locally");
@@ -104,7 +106,7 @@ class LogKeeperService
                     $this->logger->info("Not uploading {$compressedName} because enabled_remote is false");
                 }
             } elseif (($days > $this->localRetentionDays) && ($days > $this->remoteRetentionDaysCalculated)) {
-                $this->logger->info("Deleting {$log} because it is to old to be kept either local our remotely");
+                $this->logger->info("Deleting {$log} because it is to old to be kept either local or remotely");
 
                 // file too old to be stored either remotely or locally
                 $this->localRepo->delete($log);
