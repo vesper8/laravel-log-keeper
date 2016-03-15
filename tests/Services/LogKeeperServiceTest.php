@@ -226,5 +226,4 @@ class LogKeeperServiceTest extends TestCase
         $this->assertSame(["laravel-today-{$today->toDateString()}.log"], $logs);
         $this->assertSame([], $remoteRepo->getCompressed());
     }
-
 }

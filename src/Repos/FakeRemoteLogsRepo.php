@@ -1,13 +1,9 @@
 <?php namespace MathiasGrimm\LaravelLogKeeper\Repos;
 
-use Carbon\Carbon;
-use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
+use Exception;
 
 class FakeRemoteLogsRepo extends FakeLogsRepo
 {
-    private $config;
-    private $logs;
-
     public function __construct(array $config)
     {
         parent::__construct($config);

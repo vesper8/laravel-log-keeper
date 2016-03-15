@@ -5,8 +5,8 @@ use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 
 class FakeLogsRepo implements LogsRepoInterface
 {
-    private $config;
-    private $logs;
+    protected $config;
+    protected $logs;
 
     public function __construct(array $config)
     {
