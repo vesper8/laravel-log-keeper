@@ -1,5 +1,6 @@
 <?php namespace MathiasGrimm\LaravelLogKeeper\Repos;
 
+use Exception;
 use \Storage;
 use MathiasGrimm\LaravelLogKeeper\Support\LogUtil;
 
@@ -15,7 +16,7 @@ class RemoteLogsRepo implements LogsRepoInterface
         $this->config = $config;
 
         if ($this->config['enabled_remote'] && !$this->config['remote_disk']) {
-            throw new \Exception("remote_disk not configured for Laravel Log Keeper");
+            throw new Exception("remote_disk not configured for Laravel Log Keeper");
         }
 
         $this->localLogPath = storage_path('logs');
@@ -57,7 +58,7 @@ class RemoteLogsRepo implements LogsRepoInterface
 
     public function compress($log, $compressedName)
     {
-        throw new \Exception("Method not implemented yet");
+        throw new Exception("Method not implemented yet");
         // TODO: Implement compress() method.
     }
 
