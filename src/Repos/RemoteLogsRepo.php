@@ -15,7 +15,7 @@ class RemoteLogsRepo implements LogsRepoInterface
         $this->config = $config;
 
         if ($this->config['enabled_remote'] && !$this->config['remote_disk']) {
-            throw new Exception("remote_disk not configured for Laravel Log Keeper");
+            throw new \Exception("remote_disk not configured for Laravel Log Keeper");
         }
 
         $this->localLogPath = storage_path('logs');
