@@ -18,7 +18,7 @@ class LogKeeperServiceFactory
         $logger = new Logger('laravel-log-keeper');
 
         if ($config['log']) {
-            $logger->pushHandler(new RotatingFileHandler(storage_path('logs') . '/laravel-log-keeper.log', 365, Logger::INFO));
+            $logger->pushHandler(new RotatingFileHandler(storage_path('logs') . '/laravellogkeeper.log', 365, Logger::INFO));
         } else {
             $logger->pushHandler(new NullHandler());
         }
