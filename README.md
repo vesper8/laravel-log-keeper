@@ -79,6 +79,7 @@ To use Laravel Log Keeper your log files have to be in the daily format, which i
 
 ### Environment
 You can override the following variables placing them in your .env
+(LARAVEL_LOG_KEEPER_REMOTE_DISK is mandatory)
 
 Example:
 
@@ -86,10 +87,14 @@ Example:
 # .env
 ...
 
-LARAVEL_LOG_KEEPER_REMOTE_DISK           = "s3"
-LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS  = 3
-LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS = 15
-LARAVEL_LOG_KEEPER_REMOTE_PATH           = "myproject1-prod-01"
+
+LARAVEL_LOG_KEEPER_ENABLED=true
+LARAVEL_LOG_KEEPER_ENABLED_REMOTE=false
+LARAVEL_LOG_KEEPER_REMOTE_PATH=/
+LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS=7
+LARAVEL_LOG_KEEPER_REMOTE_RETENTION_DAYS=30
+LARAVEL_LOG_KEEPER_REMOTE_DISK=storage
+LARAVEL_LOG_KEEPER_LOG=true
 
 ...
 
