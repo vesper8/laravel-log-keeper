@@ -88,23 +88,29 @@ class LogKeeperService
             if (($days > $this->localRetentionDays) && ($days <= $this->remoteRetentionDaysCalculated)) {
                 $compressedName = "{$log}.tar.bz2";
 
-                if ($this->config['enabled_remote']) {
-                    $this->logger->info("Compressing {$log} into {$compressedName}");
+                $this->logger->info("Compressing {$log} into {$compressedName}");
 
-                    $this->localRepo->compress($log, $compressedName);
-                    $content = $this->localRepo->get($compressedName);
+                $this->localRepo->compress($log, $compressedName);
+                $content = $this->localRepo->get($compressedName);
+
+                $this->logger->info("Deleting $compressedName locally");
+                $this->localRepo->delete($compressedName);
+
+                if ($this->config['enabled_remote']) {
 
                     $this->logger->info("Uploading {$compressedName}");
                     $this->remoteRepo->put($compressedName, $content);
 
-                    $this->logger->info("Deleting $compressedName locally");
-                    $this->localRepo->delete($compressedName);
                 } else {
                     $this->logger->info("Deleting $log locally");
                     $this->localRepo->delete($log);
 
                     $this->logger->info("Not uploading {$compressedName} because enabled_remote is false");
                 }
+
+                $this->logger->info("Deleting $compressedName locally");
+                $this->localRepo->delete($compressedName);
+
             } elseif (($days > $this->localRetentionDays) && ($days > $this->remoteRetentionDaysCalculated)) {
                 $this->logger->info("Deleting {$log} because it is to old to be kept either local or remotely");
 
@@ -112,6 +118,18 @@ class LogKeeperService
                 $this->localRepo->delete($log);
             } else {
                 $this->logger->info("Keeping {$log}");
+            }
+        }
+
+        $compressedlogs = $this->localRepo->getCompressed();
+
+        foreach ($compressedlogs as $compressedlog) {
+
+            $this->logger->info("Analysing {$compressedlog}");
+
+            if (($days > $this->localRetentionDays) && ($days <= $this->remoteRetentionDaysCalculated)) {
+                $this->logger->info("Deleting $compressedlog locally");
+                $this->localRepo->delete($compressedlog);
             }
         }
     }
