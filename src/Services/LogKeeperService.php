@@ -94,14 +94,14 @@ class LogKeeperService
                 $this->logger->info("Compressing {$log} into {$compressedName}");
 
                 $this->localRepo->compress($log, $compressedName);
-                $content = $this->localRepo->get($compressedName);
 
-                $this->logger->info("Deleting $compressedName locally");
-                $this->localRepo->delete($compressedName);
+                $this->logger->info("Deleting $log locally");
+                $this->localRepo->delete($log);
 
                 if ($this->config['enabled_remote']) {
 
                     $this->logger->info("Uploading {$compressedName}");
+                    $content = $this->localRepo->get($compressedName);
                     $this->remoteRepo->put($compressedName, $content);
 
                 } else {
@@ -130,7 +130,7 @@ class LogKeeperService
 
             $this->logger->info("Analysing {$compressedlog}");
 
-            if (($days > $this->localRetentionDaysForCompressed) && ($days <= $this->remoteRetentionDaysCalculated)) {
+            if (($days > $this->localRetentionDaysForCompressed)) {
                 $this->logger->info("Deleting $compressedlog locally");
                 $this->localRepo->delete($compressedlog);
             }
