@@ -72,4 +72,9 @@ class LocalLogsRepo implements LogsRepoInterface
     {
         $this->disk->put($log, $content);
     }
+
+    public function exists($log)
+    {
+        $this->disk->exists($log);
+    }
 }
