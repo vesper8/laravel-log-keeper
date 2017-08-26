@@ -70,11 +70,9 @@ class LogKeeperService
 
         $this->localWork();
 
-        if ($this->config['enabled_remote']) {
-            $this->remoteCleanUp();
-        } else {
-            $this->logger->warning("Laravel Log Keeper is not enabled for remote operations");
-        }
+        $this->localCompressedCleanUp();
+
+        $this->remoteCleanUp();
     }
 
     private function localWork()
@@ -95,27 +93,9 @@ class LogKeeperService
                 continue;
             }
 
-            $compressedName = "{$log}.tar.bz2";
-            if (windows_os())
-                $compressedName = "{$log}.gz";
-            if($this->localRepo->exists($log, $compressedName)){
-                $this->logger->info("Compressed file {$compressedName} already exists");
-            }else{
-                $this->logger->info("Compressing {$log} into {$compressedName}");
-                $this->localRepo->compress($log, $compressedName);
-            }
+            $compressedName = $this->compress($log);
 
-            if (($days <= $this->remoteRetentionDaysCalculated) && $this->config['enabled_remote']) {
-                if($this->remoteRepo->exits($compressedName)){
-                    $this->logger->info("Not uploading {$compressedName} because already exists remotely");
-                }else{
-                    $this->logger->info("Uploading {$compressedName}");
-                    $content = $this->localRepo->get($compressedName);
-                    $this->remoteRepo->put($compressedName, $content);
-                }
-            }else{
-                $this->logger->info("Not uploading {$compressedName} because enabled_remote is false or is too old to be kept remotely");
-            }
+            $this->uploadToRemote($log, $compressedName);
 
             if ($days > $this->localRetentionDaysForCompressed) {
                 $this->logger->info("Deleting {$compressedName} because it is to old to be kept local");
@@ -130,25 +110,14 @@ class LogKeeperService
 
             $this->logger->info("Keeping {$log} because it is to recent to be deleted locally.");
         }
-
-        $compressedlogs = $this->localRepo->getCompressed();
-
-        foreach ($compressedlogs as $compressedlog) {
-
-            $this->logger->info("Analysing {$compressedlog}");
-
-            if ($days <= $this->localRetentionDaysForCompressed) {
-                $this->logger->info("keeping $compressedlog locally");
-                continue;
-            }
-
-            $this->logger->info("Deleting $compressedlog locally");
-            $this->localRepo->delete($compressedlog);
-        }
     }
 
     private function remoteCleanUp()
     {
+        if (!$this->config['enabled_remote']) {
+            return;
+        }
+
         $this->logger->info("Starting remote clean up");
 
         $logs = $this->remoteRepo->getCompressed();
@@ -165,5 +134,73 @@ class LogKeeperService
                 $this->logger->info("Keeping {$log}");
             }
         }
+    }
+
+    /**
+     * @param $days
+     */
+    private function localCompressedCleanUp($days)
+    {
+        $this->logger->info("Starting local compressed clean up");
+
+        $logs = $this->localRepo->getCompressed();
+
+        foreach ($logs as $log) {
+
+            $this->logger->info("Analysing {$log}");
+
+            $days = LogUtil::diffInDays($log, $this->today);
+            $this->logger->info("{$log} is {$days} day(s) old");
+
+            if ($days <= $this->localRetentionDaysForCompressed) {
+                $this->logger->info("keeping $log locally");
+                continue;
+            }
+
+            $this->logger->info("Deleting $log locally");
+            $this->localRepo->delete($log);
+        }
+    }
+
+    /**
+     * @param $log
+     * @return string
+     */
+    private function compress($log): string
+    {
+        $compressedName = "{$log}.tar.bz2";
+        if (windows_os())
+            $compressedName = "{$log}.gz";
+
+        if ($this->localRepo->exists($log, $compressedName)) {
+            $this->logger->info("Compressed file {$compressedName} already exists");
+        } else {
+            $this->logger->info("Compressing {$log} into {$compressedName}");
+            $this->localRepo->compress($log, $compressedName);
+        }
+        return $compressedName;
+    }
+
+    /**
+     * @param $log
+     * @param $compressedName
+     */
+    private function uploadToRemote($log, $compressedName)
+    {
+        $days = LogUtil::diffInDays($log, $this->today);
+
+        if (($days > $this->remoteRetentionDaysCalculated) || !$this->config['enabled_remote']) {
+            $this->logger->info("Not uploading {$compressedName} because enabled_remote is false or is too old to be kept remotely");
+            return;
+        }
+
+        if ($this->remoteRepo->exits($compressedName)) {
+            $this->logger->info("Not uploading {$compressedName} because already exists remotely");
+            return;
+        }
+
+        $this->logger->info("Uploading {$compressedName}");
+        $content = $this->localRepo->get($compressedName);
+        $this->remoteRepo->put($compressedName, $content);
     }
 }
