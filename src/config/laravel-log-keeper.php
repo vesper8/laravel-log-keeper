@@ -33,6 +33,16 @@ return [
     'localRetentionDays' => env('LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS', 7),
 
     // ----------------------------------------------------------------------------
+    // How many days a compressed file will be kept on the local disk before
+    // being uploaded to the remote disk.
+    // Default is 7 days.
+    // Local files with more than 7 days will be compressed using bzip2 and uploaded
+    // to the remote disk. They will also be deleted from the local disk after being
+    // uploaded
+    // ----------------------------------------------------------------------------
+    'localRetentionDaysForCompressed' => env('LARAVEL_COMPRESSED_LOG_KEEPER_LOCAL_RETENTION_DAYS', 7),
+
+    // ----------------------------------------------------------------------------
     // How many days a file will be kept on the remote for.
     // The days here means days after the local retention. So 30 would actually
     // 30 + 7 = 37
