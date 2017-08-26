@@ -98,10 +98,10 @@ class LogKeeperService
             $compressedName = "{$log}.tar.bz2";
             $this->logger->info("Compressing {$log} into {$compressedName}");
             $this->localRepo->compress($log, $compressedName);
-            $content = $this->localRepo->get($compressedName);
 
             if (($days <= $this->remoteRetentionDaysCalculated) && $this->config['enabled_remote']) {
                 $this->logger->info("Uploading {$compressedName}");
+                $content = $this->localRepo->get($compressedName);
                 $this->remoteRepo->put($compressedName, $content);
             }else{
                 $this->logger->info("Not uploading {$compressedName} because enabled_remote is false or is too old to be kept remotely");
