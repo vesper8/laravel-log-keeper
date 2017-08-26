@@ -39,7 +39,7 @@ class LocalLogsRepo implements LogsRepoInterface
 
     public function delete($log)
     {
-        $path = "{$this->localLogPath}/{$log}";
+        $path = "{$this->localLogPath}".DIRECTORY_SEPARATOR."{$log}";
 
         $this->disk->delete($path);
     }
@@ -47,7 +47,7 @@ class LocalLogsRepo implements LogsRepoInterface
     public function compress($log, $compressedName)
     {
         if (windows_os()){
-            $result = gzCompressFile($this->localLogPath.'/'.$log);
+            $result = gzCompressFile($this->localLogPath.DIRECTORY_SEPARATOR.$log);
 
             if ($result === false) {
                 throw new Exception("Something went wrong when compressing {$log} under win system");
@@ -64,7 +64,7 @@ class LocalLogsRepo implements LogsRepoInterface
 
     public function get($log)
     {
-        $path = "{$this->localLogPath}/{$log}";
+        $path = "{$this->localLogPath}".DIRECTORY_SEPARATOR."{$log}";
         return $this->disk->get($path);
     }
 
@@ -75,6 +75,7 @@ class LocalLogsRepo implements LogsRepoInterface
 
     public function exists($log)
     {
-        $this->disk->exists($log);
+        $path = "{$this->localLogPath}".DIRECTORY_SEPARATOR."{$log}";
+        return $this->disk->exists($path);
     }
 }

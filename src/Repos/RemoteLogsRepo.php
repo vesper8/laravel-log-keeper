@@ -40,13 +40,6 @@ class RemoteLogsRepo implements LogsRepoInterface
         $this->disk->delete($path);
     }
 
-    public function exists($log)
-    {
-        $path = "{$this->remotePath}{$log}";
-
-        return $this->disk->exists($path);
-    }
-
     public function put($log, $content)
     {
         $path = "{$this->remotePath}{$log}";
@@ -72,5 +65,12 @@ class RemoteLogsRepo implements LogsRepoInterface
     public function get($log)
     {
         return $this->disk->get("{$this->remotePath}/{$log}");
+    }
+
+    public function exists($log)
+    {
+        $path = "{$this->remotePath}/{$log}";
+
+        return $this->disk->exists($path);
     }
 }

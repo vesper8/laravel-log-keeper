@@ -66,7 +66,7 @@ class LogKeeperService
         $this->logger->info("Local Retention for compressed: {$this->localRetentionDaysForCompressed} days");
         $this->logger->info("Remote Retention: {$this->remoteRetentionDays} days");
         $this->logger->info("Calculated Retention: {$this->remoteRetentionDaysCalculated} days");
-        $this->logger->info("Enabled remote: {$this->config['enabled_remote']}");
+        $this->logger->info("Enabled remote: ".($this->config['enabled_remote'] ? 'true': 'false'));
 
         $this->localWork();
 
@@ -137,9 +137,9 @@ class LogKeeperService
     }
 
     /**
-     * @param $days
+     *
      */
-    private function localCompressedCleanUp($days)
+    private function localCompressedCleanUp()
     {
         $this->logger->info("Starting local compressed clean up");
 
@@ -172,7 +172,7 @@ class LogKeeperService
         if (windows_os())
             $compressedName = "{$log}.gz";
 
-        if ($this->localRepo->exists($log, $compressedName)) {
+        if ($this->localRepo->exists($compressedName)) {
             $this->logger->info("Compressed file {$compressedName} already exists");
         } else {
             $this->logger->info("Compressing {$log} into {$compressedName}");
