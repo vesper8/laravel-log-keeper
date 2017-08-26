@@ -89,7 +89,7 @@ class LogKeeperService
 
             $this->logger->info("{$log} is {$days} day(s) old");
 
-            if (($days > $this->localRetentionDaysForCompressed) && ($days > $this->remoteRetentionDaysCalculated)) {
+            if (($days > $this->localRetentionDaysForCompressed) && (!$this->config['enabled_remote'] || $days > $this->remoteRetentionDaysCalculated)) {
                 $this->logger->info("Deleting {$log} because it is to old to be kept either local or remotely");
                 $this->localRepo->delete($log);
                 continue;
