@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-
+        "padosoft/support": "^1.16"
     },
     "require-dev" : {
 

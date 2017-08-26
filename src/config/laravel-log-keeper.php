@@ -13,7 +13,7 @@ return [
     // if it is set to false, the local files older than the local retention will be
     // delete without being uploaded to the remote disk
     // ----------------------------------------------------------------------------
-    'enabled_remote' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', true),
+    'enabled_remote' => env('LARAVEL_LOG_KEEPER_ENABLED_REMOTE', false),
 
     // ----------------------------------------------------------------------------
     // Where in the remote location it will be stored. You can leave it blank
