@@ -100,9 +100,6 @@ class LogKeeperService
             $this->localRepo->compress($log, $compressedName);
             $content = $this->localRepo->get($compressedName);
 
-            $this->logger->info("Deleting $compressedName locally");
-            $this->localRepo->delete($compressedName);
-
             if (($days <= $this->remoteRetentionDaysCalculated) && $this->config['enabled_remote']) {
                 $this->logger->info("Uploading {$compressedName}");
                 $this->remoteRepo->put($compressedName, $content);
