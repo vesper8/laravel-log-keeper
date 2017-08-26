@@ -47,6 +47,7 @@ class LogKeeperService
         $this->localRepo                        = $localRepo;
         $this->remoteRepo                       = $remoteRepo;
         $this->today                            = Carbon::today();
+        $this->processFilesWithZeroDaysRetention= $this->config['processFilesWithZeroDaysRetention'];
         $this->localRetentionDays               = $this->config['localRetentionDays'];
         $this->localRetentionDaysForCompressed  = $this->config['localRetentionDaysForCompressed'];
         $this->remoteRetentionDays              = $this->config['remoteRetentionDays'];
@@ -62,6 +63,7 @@ class LogKeeperService
         }
 
         $this->logger->info("Starting Laravel Log Keeper");
+        $this->logger->info("Process files with zero retention: ".($this->processFilesWithZeroDaysRetention ? 'true': 'false'));
         $this->logger->info("Local Retention: {$this->localRetentionDays} days");
         $this->logger->info("Local Retention for compressed: {$this->localRetentionDaysForCompressed} days");
         $this->logger->info("Remote Retention: {$this->remoteRetentionDays} days");
@@ -86,6 +88,11 @@ class LogKeeperService
             $days = LogUtil::diffInDays($log, $this->today);
 
             $this->logger->info("{$log} is {$days} day(s) old");
+
+            if(!$this->processFilesWithZeroDaysRetention && $days<1){
+                $this->logger->info("{$log} not processing because it is 0 day old and processFilesWithZeroDaysRetention is false");
+                continue;
+            }
 
             if (($days > $this->localRetentionDaysForCompressed) && (!$this->config['enabled_remote'] || $days > $this->remoteRetentionDaysCalculated)) {
                 $this->logger->info("Deleting {$log} because it is to old to be kept either local or remotely");

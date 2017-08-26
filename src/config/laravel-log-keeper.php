@@ -23,6 +23,13 @@ return [
     'remote_path' => rtrim(env('LARAVEL_LOG_KEEPER_REMOTE_PATH'), '/'),
 
     // ----------------------------------------------------------------------------
+    // Enable or Disable processing Files With Zero Days Retention
+    // Normally log files in the same day, sometimes is usefull because another process
+    // lock or logging into this file and compress fails.
+    // ----------------------------------------------------------------------------
+    'processFilesWithZeroDaysRetention' => env('LARAVEL_LOG_KEEPER_PROCESS_FILES_WITH_ZERO_DAYS_RETENTION', false),
+
+    // ----------------------------------------------------------------------------
     // How many days a file will be kept on the local disk before
     // being uploaded to the remote disk.
     // Default is 7 days.
