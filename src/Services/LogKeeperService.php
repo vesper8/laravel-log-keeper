@@ -98,13 +98,21 @@ class LogKeeperService
             $compressedName = "{$log}.tar.bz2";
             if (windows_os())
                 $compressedName = "{$log}.gz";
-            $this->logger->info("Compressing {$log} into {$compressedName}");
-            $this->localRepo->compress($log, $compressedName);
+            if($this->localRepo->exists($log, $compressedName)){
+                $this->logger->info("Compressed file {$compressedName} already exists");
+            }else{
+                $this->logger->info("Compressing {$log} into {$compressedName}");
+                $this->localRepo->compress($log, $compressedName);
+            }
 
             if (($days <= $this->remoteRetentionDaysCalculated) && $this->config['enabled_remote']) {
-                $this->logger->info("Uploading {$compressedName}");
-                $content = $this->localRepo->get($compressedName);
-                $this->remoteRepo->put($compressedName, $content);
+                if($this->remoteRepo->exits($compressedName)){
+                    $this->logger->info("Not uploading {$compressedName} because already exists remotely");
+                }else{
+                    $this->logger->info("Uploading {$compressedName}");
+                    $content = $this->localRepo->get($compressedName);
+                    $this->remoteRepo->put($compressedName, $content);
+                }
             }else{
                 $this->logger->info("Not uploading {$compressedName} because enabled_remote is false or is too old to be kept remotely");
             }
