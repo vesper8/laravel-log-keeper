@@ -15,7 +15,7 @@ class LogUtil
     public static function getCompressed($logs, $keepIndex = false)
     {
         $logs = array_filter($logs, function ($item) {
-            return (bool) preg_match('/^.*?\d{4}-\d{2}-\d{2}\.gz2\.gz\.tar\.bz2$/', $item);
+            return (bool) preg_match('/^.*?\d{4}-\d{2}-\d{2}(\.log\.tar\.bz2|\.log\.gz){1}$/', $item);
         });
 
         if (!$keepIndex) {
