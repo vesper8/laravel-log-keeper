@@ -96,6 +96,8 @@ class LogKeeperService
             }
 
             $compressedName = "{$log}.tar.bz2";
+            if (windows_os())
+                $compressedName = "{$log}.gz";
             $this->logger->info("Compressing {$log} into {$compressedName}");
             $this->localRepo->compress($log, $compressedName);
 
