@@ -33,6 +33,13 @@ return [
     'localRetentionDays' => env('LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS', 7),
 
     // ----------------------------------------------------------------------------
+    // How many days a compressed file will be kept on the local disk.
+    // Default is 15 days.
+    // Local compressed files with more than 15 days will be deleted on the local disk.
+    // ----------------------------------------------------------------------------
+    'localRetentionDaysForCompressed' => env('LARAVEL_LOG_KEEPER_LOCAL_RETENTION_DAYS_FOR_COMPRESSED', 15),
+
+    // ----------------------------------------------------------------------------
     // How many days a file will be kept on the remote for.
     // The days here means days after the local retention. So 30 would actually
     // 30 + 7 = 37
