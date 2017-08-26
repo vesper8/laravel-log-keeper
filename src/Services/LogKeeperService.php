@@ -89,12 +89,6 @@ class LogKeeperService
 
             $this->logger->info("{$log} is {$days} day(s) old");
 
-            if ($days <= $this->localRetentionDays) {
-                $this->logger->info("Keeping {$log} because it is to recent to be deleted or compressed or stored remotely.");
-                $this->localRepo->delete($log);
-                continue;
-            }
-
             if (($days > $this->localRetentionDaysForCompressed) && ($days > $this->remoteRetentionDaysCalculated)) {
                 $this->logger->info("Deleting {$log} because it is to old to be kept either local or remotely");
                 $this->localRepo->delete($log);
@@ -121,8 +115,13 @@ class LogKeeperService
                 $this->localRepo->delete($compressedName);
             }
 
-            $this->logger->info("Deleting $log locally");
-            $this->localRepo->delete($log);
+            if ($days > $this->localRetentionDays) {
+                $this->logger->info("Deleting $log locally");
+                $this->localRepo->delete($log);
+                continue;
+            }
+
+            $this->logger->info("Keeping {$log} because it is to recent to be deleted locally.");
         }
 
         $compressedlogs = $this->localRepo->getCompressed();
