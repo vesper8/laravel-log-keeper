@@ -34,6 +34,7 @@ class LogKeeper extends Command
         try {
             $service = LogKeeperServiceFactory::buildFromLaravelConfig();
             $logger  = $service->getLogger();
+            $service->setCommand($this);
             $service->work();
         } catch (Exception $e) {
             $logger->error("Something went wrong: {$e->getMessage()}");
