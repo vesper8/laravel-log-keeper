@@ -47,7 +47,7 @@ class LocalLogsRepo implements LogsRepoInterface
     public function compress($log, $compressedName)
     {
         if (windows_os()){
-            $result = gzCompressFile($log);
+            $result = gzCompressFile(storage_path().'/logs/'.$log);
 
             if ($result === false) {
                 throw new Exception("Something went wrong when compressing {$log} under win system");
