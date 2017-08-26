@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+    "hash": "283df5aadbc31e31ebc6c72efb712f1c",
     "content-hash": "dd48892e30c305f4d6fedf57f0e79fab",
     "packages": [
         {
@@ -57,7 +58,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2017-01-16T07:55:07+00:00"
+            "time": "2017-01-16 07:55:07"
         },
         {
             "name": "padosoft/support",
@@ -117,7 +118,7 @@
                 "padosoft",
                 "support"
             ],
-            "time": "2017-08-26T16:56:26+00:00"
+            "time": "2017-08-26 16:56:26"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -176,7 +177,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2017-06-14T15:44:48+00:00"
+            "time": "2017-06-14 15:44:48"
         },
         {
             "name": "symfony/translation",
@@ -241,7 +242,7 @@
             ],
             "description": "Symfony Translation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-06-24T16:45:30+00:00"
+            "time": "2017-06-24 16:45:30"
         }
     ],
     "packages-dev": [],
