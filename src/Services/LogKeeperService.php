@@ -88,10 +88,17 @@ class LogKeeperService
         $this->command->info($msg);
         $this->logger->info($msg);
     }
+
     private function logError($msg)
     {
         $this->command->error($msg);
         $this->logger->error($msg);
+    }
+
+    private function logRed($msg)
+    {
+        $this->command->error($msg);
+        $this->logger->info($msg);
     }
 
     public function work()
@@ -136,7 +143,7 @@ class LogKeeperService
             }
 
             if (($days > $this->localRetentionDaysForCompressed) && (!$this->config['enabled_remote'] || $days > $this->remoteRetentionDaysCalculated)) {
-                $this->log("Deleting {$log} because it is to old to be kept either local or remotely");
+                $this->logRed("Deleting {$log} because it is to old to be kept either local or remotely");
                 $this->localRepo->delete($log);
                 continue;
             }
@@ -146,12 +153,12 @@ class LogKeeperService
             $this->uploadToRemote($log, $compressedName);
 
             if ($days > $this->localRetentionDaysForCompressed) {
-                $this->log("Deleting {$compressedName} because it is to old to be kept local");
+                $this->logRed("Deleting {$compressedName} because it is to old to be kept local");
                 $this->localRepo->delete($compressedName);
             }
 
             if ($days > $this->localRetentionDays) {
-                $this->log("Deleting $log locally");
+                $this->logRed("Deleting $log locally");
                 $this->localRepo->delete($log);
                 continue;
             }
@@ -178,7 +185,7 @@ class LogKeeperService
             $this->log("{$log} is {$days} day(s) old");
 
             if ($days > $this->remoteRetentionDaysCalculated) {
-                $this->log("Deleting {$log}");
+                $this->logRed("Deleting {$log} in remote");
                 $this->remoteRepo->delete($log);
             } else {
                 $this->log("Keeping {$log}");
@@ -207,7 +214,7 @@ class LogKeeperService
                 continue;
             }
 
-            $this->log("Deleting $log locally");
+            $this->logRed("Deleting $log locally");
             $this->localRepo->delete($log);
         }
     }
